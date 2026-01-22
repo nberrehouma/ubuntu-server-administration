@@ -1,0 +1,152 @@
+📋 Prerequisites
+GitHub account
+
+Linux/macOS terminal (or Git Bash on Windows)
+
+Git installed (git --version to check)
+
+🚀 Step 1: Check for Existing SSH Keys
+bash
+# Open terminal and check for existing SSH keys
+ls -al ~/.ssh
+You should see files like:
+
+id_rsa and id_rsa.pub (RSA key pair)
+
+id_ed25519 and id_ed25519.pub (Ed25519 key pair)
+
+If you already have keys, you can use them. If not, proceed to Step 2.
+
+🔐 Step 2: Generate New SSH Key Pair
+Option A: Generate Ed25519 (Recommended - more secure)
+bash
+# Generate Ed25519 key
+ssh-keygen -t ed25519 -C "your_email@example.com"
+
+# You'll see this prompt:
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/home/username/.ssh/id_ed25519): 
+# Press Enter to accept default location
+
+Enter passphrase (empty for no passphrase):
+# Enter a secure passphrase (recommended) or leave empty
+# Re-enter the same passphrase when prompted
+Option B: Generate RSA (if needed for compatibility)
+bash
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+What happens:
+
+Creates two files in ~/.ssh/:
+
+id_ed25519 (PRIVATE KEY - NEVER SHARE THIS!)
+
+id_ed25519.pub (PUBLIC KEY - share this with GitHub)
+
+The -C flag adds a comment (usually your email)
+
+📋 Step 3: Start SSH Agent and Add Your Key
+bash
+# Start the SSH agent in the background
+eval "$(ssh-agent -s)"
+# Should show: Agent pid [some number]
+
+# Add your SSH private key to the ssh-agent
+ssh-add ~/.ssh/id_ed25519
+# If you used a passphrase, enter it when prompted
+Note for macOS users:
+
+bash
+# Add this to ~/.ssh/config
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+📋 Step 4: Copy Your Public SSH Key
+bash
+# Display your public key and copy it to clipboard
+# Linux (if xclip is installed):
+cat ~/.ssh/id_ed25519.pub | xclip -selection clipboard
+
+# macOS:
+cat ~/.ssh/id_ed25519.pub | pbcopy
+
+# Windows (Git Bash):
+cat ~/.ssh/id_ed25519.pub | clip
+
+# Or manually copy:
+cat ~/.ssh/id_ed25519.pub
+# Select and copy the entire output (starts with ssh-ed25519...)
+Example of what to copy:
+
+text
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAbc123def456ghi789jkl012mno345pqr678stu901vwx234yz your_email@example.com
+🌐 Step 5: Add SSH Key to Your GitHub Account
+Go to GitHub.com and log in
+
+Click your profile picture → Settings
+
+In the left sidebar, click SSH and GPG keys
+
+Click New SSH key or Add SSH key
+
+Fill in:
+
+Title: Give it a descriptive name (e.g., "My Laptop", "Work Desktop")
+
+Key type: Leave as "Authentication Key"
+
+Key: Paste your public key (from Step 4)
+
+Click Add SSH key
+
+You may need to enter your GitHub password to confirm
+
+✅ Step 6: Test SSH Connection
+bash
+# Test connection to GitHub
+ssh -T git@github.com
+First time you'll see:
+
+text
+The authenticity of host 'github.com (140.82.121.3)' can't be established.
+ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
+Are you sure you want to continue connecting (yes/no)?
+Type yes and press Enter.
+
+Successful connection shows:
+
+text
+Hi username! You've successfully authenticated, but GitHub does not provide shell access.
+🔧 Step 7: Configure Git to Use SSH
+bash
+# Set your Git username and email (if not already set)
+git config --global user.name "Your Name"
+git config --global user.email "your_email@example.com"
+
+# Check if SSH is being used
+git config --global --get-regexp 'url\..*\.insteadof'
+For existing repositories that use HTTPS:
+
+Method A: Change remote URL to SSH
+bash
+# Check current remote URL
+git remote -v
+# Should show https://github.com/username/repo.git
+
+# Change to SSH URL
+git remote set-url origin git@github.com:username/repo.git
+
+# Verify
+git remote -v
+# Should show git@github.com:username/repo.git
+Method B: Clone new repositories with SSH
+bash
+# Instead of HTTPS URL:
+# git clone https://github.com/username/repo.git
+
+# Use SSH URL:
+git clone git@github.com:username/repo.git
+GitHub SSH URL format:
+
+text
+git@github.com:username/repository.git

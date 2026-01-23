@@ -1,6 +1,6 @@
 GIT Repo for linux server adminstration
 
-# when working without GUI (only with shell). many problem appreas.  one of the absence of the copy/paste convevience. in the following i try to resume many tics do deal with this issue: 
+# when working without GUI (only with shell). many problem can be encoutred.  one of them is  absence of the copy/paste convevience. in the following i try to resume many tics do deal with this issue and  give solution to share files between host ad guest : 
 
  **tmux**
     - split screen ctrl-b %

@@ -1,0 +1,5 @@
+1- echo $0  to show the used shell
+2- /etc/passwd file contains lines  for each user. for each user a shell is defined. 
+3- to show available shells : cat /etc/shells
+4- to change betwwen virtual terminals use chvt N 
+5- who command gives info on logged users and their tty
